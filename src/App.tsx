@@ -36,22 +36,36 @@ export function App() {
   const [genres, setGenres] = useState<GenreResponseProps[]>([]);
 
   const [movies, setMovies] = useState<MovieProps[]>([]);
-  const [selectedGenre, setSelectedGenre] = useState<GenreResponseProps>({} as GenreResponseProps);
 
+  const [selectedGenre, setSelectedGenre]=
+    useState<GenreResponseProps>({} as GenreResponseProps);
+
+  // useEffect (console.log) - listagem dos gêneros dos filmes
+  // useEffect(() => {
+  //   api.get<GenreResponseProps[]>('genres').then(data => console.log(data))
+  // }, []);
+
+  // useEffect - usado pra fazer a listagem dos gêneros dos filmes
+  // os dados são capturados (api.get - axios) através da rota 'genres'
+  // a Fake API (JSON Server) é responsável por servir esses dados dos
+  // gêneros passando na rota os valores
   useEffect(() => {
-    api.get<GenreResponseProps[]>('genres').then(response => {
-      setGenres(response.data);
-    });
+    api.get<GenreResponseProps[]>('genres')
+      .then(response => {
+        setGenres(response.data);
+      });
   }, []);
 
   useEffect(() => {
-    api.get<MovieProps[]>(`movies/?Genre_id=${selectedGenreId}`).then(response => {
-      setMovies(response.data);
-    });
+    api.get<MovieProps[]>(`movies/?Genre_id=${selectedGenreId}`)
+      .then(response => {
+        setMovies(response.data);
+      });
 
-    api.get<GenreResponseProps>(`genres/${selectedGenreId}`).then(response => {
-      setSelectedGenre(response.data);
-    })
+    api.get<GenreResponseProps>(`genres/${selectedGenreId}`)
+      .then(response => {
+        setSelectedGenre(response.data);
+      })
   }, [selectedGenreId]);
 
   function handleClickButton(id: number) {
@@ -79,13 +93,21 @@ export function App() {
 
       <div className="container">
         <header>
-          <span className="category">Categoria:<span> {selectedGenre.title}</span></span>
+          <span
+            className="category">
+              Categoria: <span> {selectedGenre.title}</span>
+          </span>
         </header>
 
         <main>
           <div className="movies-list">
             {movies.map(movie => (
-              <MovieCard key ={movie.imdbID} title={movie.Title} poster={movie.Poster} runtime={movie.Runtime} rating={movie.Ratings[0].Value} />
+              <MovieCard
+                key={movie.imdbID}
+                title={movie.Title}
+                poster={movie.Poster}
+                runtime={movie.Runtime}
+                rating={movie.Ratings[0].Value} />
             ))}
           </div>
         </main>
